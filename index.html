@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CBI Registration Form - Bulan Chapter</title>
+<style>
+  body {
+    font-family: system-ui, Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    background: #eef2f7;
+  }
+  main {
+    max-width: 1000px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    overflow-x: auto;
+  }
+  h1 {
+    text-align: center;
+    color: #2a4d69;
+    margin-bottom: 20px;
+  }
+  h2 { color: #333; }
+  label {
+    display:block;
+    margin-top:10px;
+    font-weight:600;
+    color: #444;
+  }
+  .required::after {
+    content: " *";
+    color: red;
+  }
+  input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 4px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    height: 40px;
+    box-sizing: border-box;
+  }
+  input[readonly] { background: #f0f0f0; }
+  .password-container {
+    position: relative;
+    width: 100%;
+  }
+  .password-container input {
+    padding-right: 40px;
+  }
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+  }
+  button {
+    margin-top: 15px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    background: #2a4d69;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  button:hover { background:#1f364b; }
+  button.secondary { background:#777; }
+  #entriesTable, #itTable {
+    width: 100%; border-collapse: collapse; margin-top: 15px;
+  }
+  #entriesTable th, #entriesTable td,
+  #itTable th, #itTable td {
+    border: 1px solid #ddd; padding: 10px; font-size: 14px;
+  }
+  #entriesTable th, #itTable th {
+    background:#2a4d69; color:white;
+    text-align: left;
+  }
+  #entriesTable tr:nth-child(even), #itTable tr:nth-child(even){ background:#f9f9f9; }
+  #entriesTable tr:hover, #itTable tr:hover { background:#f1f5ff; }
+  #entriesTable td:nth-child(2), #itTable td:nth-child(2){
+    min-width: 160px;
+  }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>📋 CBI Registration Form – Bulan Chapter</h1>
+
+  <!-- Login -->
+  <section id="loginSection">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <label for="username" class="required">Username</label>
+      <input id="username" required />
+
+      <label for="password" class="required">Password</label>
+      <div class="password-container">
+        <input id="password" type="password" required />
+        <svg id="togglePassword" class="toggle-password" fill="none" stroke="black" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      </div>
+
+      <button type="submit">Login</button>
+    </form>
+    <p style="font-size:0.85rem; color:#777; margin-top:8px;">
+      🔑 Please login with your credentials.
+    </p>
+  </section>
+
+  <!-- User -->
+  <section id="userSection" class="hidden">
+    <h2>Fill Out the Form</h2>
+    <form id="userForm" novalidate>
+      <label class="required">Full Name</label>
+      <input id="fullname" required />
+
+      <label class="required">Local Congregation</label>
+      <input id="lokal" required />
+
+      <label class="required">Birthday</label>
+      <input id="birthday" type="date" required />
+
+      <label>Age</label>
+      <input id="age" readonly />
+
+      <label class="required">Gender</label>
+      <select id="gender" required>
+        <option value="">-- Select --</option>
+        <option>Male</option>
+        <option>Female</option>
+      </select>
+
+      <label class="required">Contact Number</label>
+      <input id="contact" type="tel" required />
+
+      <label>Email (optional)</label>
+      <input id="email" type="email" />
+
+      <label>Notes</label>
+      <textarea id="notes"></textarea>
+
+      <button type="submit">Submit</button>
+    </form>
+  </section>
+
+  <!-- Admin -->
+  <section id="adminSection" class="hidden">
+    <h2>Saved Entries (Admin)</h2>
+    <table id="entriesTable">
+      <thead>
+        <tr>
+          <th>Date</th><th>Full Name</th><th>Local Congregation</th>
+          <th>Birthday</th><th>Age</th><th>Gender</th>
+          <th>Contact</th><th>Email</th><th>Notes</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- IT Specialist -->
+  <section id="itSection" class="hidden">
+    <h2>🔧 IT Specialist Panel</h2>
+    <p style="color:#444; font-size:14px;">Full control over saved data.</p>
+    <table id="itTable">
+      <thead>
+        <tr>
+          <th>Date</th><th>Full Name</th><th>Local Congregation</th>
+          <th>Birthday</th><th>Age</th><th>Gender</th>
+          <th>Contact</th><th>Email</th><th>Notes</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button id="clearEntries" class="secondary">🗑 Clear All Entries</button>
+  </section>
+
+  <!-- Logout -->
+  <section id="logoutSection" class="hidden">
+    <button id="logoutBtn" class="secondary">Logout</button>
+  </section>
+</main>
+
+<script>
+const entriesKey = "userEntries";
+const users = { user:"user123", admin:"admin123", itspecialist:"itmaster2025" };
+let currentRole = null;
+
+const loginSection = document.getElementById("loginSection");
+const userSection = document.getElementById("userSection");
+const adminSection = document.getElementById("adminSection");
+const itSection = document.getElementById("itSection");
+const logoutSection = document.getElementById("logoutSection");
+
+function loadEntries(){ return JSON.parse(localStorage.getItem(entriesKey) || "[]"); }
+function saveEntries(list){ localStorage.setItem(entriesKey, JSON.stringify(list)); }
+function escapeHtml(str=""){ return String(str).replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s])); }
+
+function renderEntries(targetTable){
+  const tbody = targetTable.querySelector("tbody");
+  tbody.innerHTML="";
+  const entries = loadEntries().slice().reverse();
+  if(!entries.length){
+    tbody.innerHTML=`<tr><td colspan="9" style="color:#666">No saved entries.</td></tr>`;
+    return;
+  }
+  entries.forEach(e=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${new Date(e.timestamp).toLocaleString()}</td>
+      <td>${escapeHtml(e.fullname)}</td>
+      <td>${escapeHtml(e.lokal)}</td>
+      <td>${escapeHtml(e.birthday)}</td>
+      <td>${e.age}</td>
+      <td>${escapeHtml(e.gender)}</td>
+      <td>${escapeHtml(e.contact)}</td>
+      <td>${escapeHtml(e.email)}</td>
+      <td>${escapeHtml(e.notes)}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// compute age
+document.getElementById("birthday").addEventListener("input", e=>{
+  const bday=new Date(e.target.value);
+  if(isNaN(bday)) return;
+  const diff=Date.now()-bday.getTime();
+  const ageDate=new Date(diff);
+  const age=Math.abs(ageDate.getUTCFullYear()-1970);
+  document.getElementById("age").value=age;
+});
+
+// login
+document.getElementById("loginForm").addEventListener("submit", e=>{
+  e.preventDefault();
+  const u=e.target.username.value.trim();
+  const p=e.target.password.value.trim();
+  if(users[u] && users[u]===p){
+    currentRole=u;
+    loginSection.classList.add("hidden");
+    logoutSection.classList.remove("hidden");
+    if(u==="user"){ userSection.classList.remove("hidden"); }
+    else if(u==="admin"){ adminSection.classList.remove("hidden"); renderEntries(document.getElementById("entriesTable")); }
+    else if(u==="itspecialist"){ itSection.classList.remove("hidden"); renderEntries(document.getElementById("itTable")); }
+  } else alert("Invalid login");
+});
+
+// logout
+document.getElementById("logoutBtn").addEventListener("click",()=>{
+  currentRole=null;
+  loginSection.classList.remove("hidden");
+  userSection.classList.add("hidden");
+  adminSection.classList.add("hidden");
+  itSection.classList.add("hidden");
+  logoutSection.classList.add("hidden");
+});
+
+// user submit
+document.getElementById("userForm").addEventListener("submit", e=>{
+  e.preventDefault();
+  const f=e.target;
+  if(!f.checkValidity()){ f.reportValidity(); return; }
+  const data={
+    timestamp:Date.now(),
+    fullname:f.fullname.value.trim(),
+    lokal:f.lokal.value.trim(),
+    birthday:f.birthday.value,
+    age:f.age.value,
+    gender:f.gender.value,
+    contact:f.contact.value.trim(),
+    email:f.email.value.trim(),
+    notes:f.notes.value.trim()
+  };
+  const entries=loadEntries(); entries.push(data); saveEntries(entries);
+  alert("Form submitted successfully!");
+  f.reset(); document.getElementById("age").value="";
+});
+
+// IT clear entries
+document.getElementById("clearEntries").addEventListener("click",()=>{
+  if(confirm("Clear all entries?")){ localStorage.removeItem(entriesKey); renderEntries(document.getElementById("itTable")); }
+});
+
+// toggle password
+document.getElementById("togglePassword").addEventListener("click", ()=>{
+  const pw=document.getElementById("password");
+  pw.type = pw.type==="password" ? "text":"password";
+});
+</script>
+</body>
+</html>
